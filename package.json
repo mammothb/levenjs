@@ -1,0 +1,23 @@
+{
+  "name": "levenjs",
+  "version": "0.0.1",
+  "description": "Fast implementation of the Levenshtein edit distance",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mammothb/levenjs.git"
+  },
+  "keywords": [
+    "leven",
+    "levenshtein"
+  ],
+  "author": "mmb L",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/mammothb/levenjs/issues"
+  },
+  "homepage": "https://github.com/mammothb/levenjs#readme"
+}
