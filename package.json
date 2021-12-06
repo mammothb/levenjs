@@ -4,11 +4,14 @@
   "description": "Fast implementation of the Levenshtein edit distance",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha tests/index.spec.js"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/mammothb/levenjs.git"
+  },
+  "bugs": {
+    "url": "https://github.com/mammothb/levenjs/issues"
   },
   "keywords": [
     "leven",
@@ -16,8 +19,12 @@
   ],
   "author": "mmb L",
   "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/mammothb/levenjs/issues"
-  },
-  "homepage": "https://github.com/mammothb/levenjs#readme"
+  "devDependencies": {
+    "chance-generators": "^3.5.2",
+    "leven": "^4.0.0",
+    "mocha": "^9.1.3",
+    "ukkonen": "^1.4.0",
+    "unexpected": "^12.0.3",
+    "unexpected-check": "^3.0.0"
+  }
 }
