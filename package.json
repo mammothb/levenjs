@@ -10,6 +10,9 @@
   "author": "mmb L",
   "type": "module",
   "exports": "./index.js",
+  "engines": {
+    "node": "^12.22.0 || ^14.17.0 || ^15.3.0 || >=16.0.0"
+  },
   "scripts": {
     "bench": "node bench.js",
     "test": "mocha tests/index.spec.js --no-timeouts"
