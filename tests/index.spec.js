@@ -1,60 +1,75 @@
 "use strict";
 
-const expect = require("unexpected").clone().use(require("unexpected-check"));
+import chai from "chai";
+import Chance from "chance";
+import levenjs from "../index.js";
+import ukkonen from "ukkonen";
 
-const {
-  array,
-  character,
-  natural,
-  paragraph,
-  pickone,
-  shape,
-  string,
-} = require("chance-generators");
+const expect = chai.expect;
+const chance = Chance(42);
 
-const levenjs = require("..");
-const ukkonen = require("ukkonen");
+const numIterations = 100;
 
-const strings = string({ length: natural({ max: 100 }) });
-const edit = pickone(["replace", "delete", "insert", "transpose"]);
-const editedTexts = shape({
-  editCount: natural({ max: 100 }),
-  text: paragraph(),
-}).map(function (args) {
-  const editCount = args.editCount;
-  const text = args.text;
+const edit = () => chance.pickone(["replace", "delete", "insert", "transpose"]);
 
-  const edits = array(edit, editCount).first();
-
-  const characters = Array.from(text);
-
-  edits.forEach((edit) => {
-    const position = natural.first() % characters.length;
-    switch (edit) {
-      case "replace":
-        characters[position] = character.first();
-      case "delete":
-        characters.splice(position, 1);
-      case "insert":
-        characters.splice(position, 0, character.first());
-      case "transpose":
-        if (position + 1 < characters.length) {
-          [characters[position + 1], characters[position]] = [
-            characters[position],
-            characters[position + 1],
-          ];
-        }
+const editedTexts = (count) => {
+  const getEdits = (editCount) => {
+    const edits = new Array(editCount);
+    for (let i = 0; i < editCount; ++i) {
+      edits[i] = edit();
     }
-  });
-
-  return {
-    text: text,
-    editedText: characters.join(""),
+    return edits;
   };
-});
 
-describe("levenjs", function () {
-  it("computes distance correctly for control group", function () {
+  const result = new Array(count);
+  for (let i = 0; i < count; ++i) {
+    const edits = getEdits(chance.natural({ max: 100 }));
+    const text = chance.paragraph();
+    const chars = Array.from(text);
+    edits.forEach((op) => {
+      const pos = chance.natural() % chars.length;
+      switch (op) {
+        case "replace":
+          chars[pos] = chance.character();
+          break;
+        case "delete":
+          chars.splice(pos, 1);
+          break;
+        case "insert":
+          chars.splice(pos, 0, chance.character());
+          break;
+        case "transpose":
+          if (pos + 1 < chars.length) {
+            [chars[pos + 1], chars[pos]] = [chars[pos], chars[pos + 1]];
+          }
+          break;
+      }
+    });
+    result[i] = { text: text, editedText: chars.join("") };
+  }
+
+  return result;
+};
+
+const strings = (count) => {
+  const result = new Array(count);
+  for (let i = 0; i < count; ++i) {
+    result[i] = chance.string({ length: chance.natural({ max: 100 }) });
+  }
+  return result;
+};
+
+const thresholds = () => {
+  const count = 20;
+  const result = new Array(count);
+  for (let i = 0; i < count; ++i) {
+    result[i] = 10 + i;
+  }
+  return result;
+};
+
+describe("levenjs", () => {
+  it("computes distance correctly for control group", () => {
     [
       { name1: "ABCDE", name2: "FGHIJ", distance: 5 },
       { name1: "AVERY", name2: "GARVEY", distance: 3 },
@@ -82,78 +97,50 @@ describe("levenjs", function () {
       { name1: "wat", name2: "", distance: 3 },
       { name1: "wat", name2: "wat", distance: 0 },
       { name1: "Ukkonen", name2: "Levenshtein", distance: 8 },
-    ].forEach(function (example) {
-      expect(
-        levenjs,
-        "when called with",
-        [example.name1, example.name2],
-        "to equal",
-        example.distance
-      );
+    ].forEach((example) => {
+      expect(levenjs(example.name1, example.name2)).equal(example.distance);
     });
   });
 
-  it("produces same result as Ukkonen", function () {
-    expect(
-      function (a, b) {
-        expect(levenjs(a, b), "to equal", ukkonen(a, b));
-      },
-      "to be valid for all",
-      strings,
-      strings
-    );
+  it("produces same result as Ukkonen", () => {
+    strings(numIterations).forEach((s1) => {
+      strings(numIterations).forEach((s2) => {
+        expect(levenjs(s1, s2)).equal(ukkonen(s1, s2));
+      });
+    });
   });
 
-  it("produces same result as Ukkonen for random edits", function () {
-    expect(
-      function (args) {
-        const text = args.text;
-        const editedText = args.editedText;
-
-        expect(
-          levenjs(text, editedText),
-          "to equal",
-          ukkonen(text, editedText)
-        );
-      },
-      "to be valid for all",
-      editedTexts
-    );
+  it("produces same result as Ukkonen for random edits", () => {
+    editedTexts(numIterations).forEach((args) => {
+      const text = args.text;
+      const editedText = args.editedText;
+      expect(levenjs(text, editedText)).equal(ukkonen(text, editedText));
+    });
   });
 
-  describe("when given a threshold", function () {
-    it("produces same result as Ukkonen", function () {
-      expect(
-        function (a, b, threshold) {
-          expect(
-            levenjs(a, b, threshold),
-            "to equal",
-            ukkonen(a, b, threshold)
-          );
-        },
-        "to be valid for all",
-        strings,
-        strings,
-        natural({ min: 10, max: 30 })
-      );
+  describe("when given a threshold", () => {
+    it("produces same result as Ukkonen", () => {
+      strings(numIterations).forEach((s1) => {
+        strings(numIterations).forEach((s2) => {
+          thresholds().forEach((threshold) => {
+            expect(levenjs(s1, s2, threshold)).equal(
+              ukkonen(s1, s2, threshold)
+            );
+          });
+        });
+      });
     });
 
-    it("produces same result as Ukkonen for random edits", function () {
-      expect(
-        function (args, threshold) {
-          var text = args.text;
-          var editedText = args.editedText;
-
-          expect(
-            levenjs(text, editedText, threshold),
-            "to equal",
+    it("produces same result as Ukkonen for random edits", () => {
+      editedTexts(numIterations).forEach((args) => {
+        thresholds().forEach((threshold) => {
+          const text = args.text;
+          const editedText = args.editedText;
+          expect(levenjs(text, editedText, threshold)).equal(
             ukkonen(text, editedText, threshold)
           );
-        },
-        "to be valid for all",
-        editedTexts,
-        natural({ min: 10, max: 30 })
-      );
+        });
+      });
     });
   });
 });

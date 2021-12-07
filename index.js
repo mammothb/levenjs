@@ -1,4 +1,4 @@
-function levenjs(s1, s2, maxDistance) {
+export default function levenjs(s1, s2, maxDistance) {
   if (s1 === s2) {
     return 0;
   }
@@ -67,5 +67,3 @@ function levenjs(s1, s2, maxDistance) {
   }
   return currentCost <= maxDistance ? currentCost : maxDistance;
 }
-
-module.exports = levenjs;
