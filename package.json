@@ -19,7 +19,14 @@
   ],
   "keywords": [
     "leven",
-    "levenshtein"
+    "levenshtein",
+    "edit",
+    "distance",
+    "fuzzy",
+    "match",
+    "matching",
+    "text",
+    "string"
   ],
   "devDependencies": {
     "benchmark": "^2.1.4",
