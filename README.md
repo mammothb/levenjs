@@ -1,5 +1,6 @@
 levenjs <br>
 [![npm version](https://badge.fury.io/js/levenjs.svg)](https://badge.fury.io/js/levenjs)
+[![Tests](https://github.com/mammothb/levenjs/actions/workflows/tests.yml/badge.svg)](https://github.com/mammothb/levenjs/actions/workflows/tests.yml)
 =============
 
 Fast implementation of the Levenshtein edit distance. The original C# project 
