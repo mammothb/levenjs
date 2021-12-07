@@ -142,14 +142,9 @@ describe("levenjs", () => {
         thresholds().forEach((threshold) => {
           const text = args.text;
           const editedText = args.editedText;
-          expect(
-            levenjs(text, editedText, threshold),
-            `given ${text}, ${editedText}, ${threshold} ${levenjs(
-              text,
-              editedText,
-              threshold
-            )} ${levenshtein(text, editedText, threshold)}`
-          ).equal(levenshtein(text, editedText, threshold));
+          expect(levenjs(text, editedText, threshold)).equal(
+            levenshtein(text, editedText, threshold)
+          );
         });
       });
     });
