@@ -1,4 +1,3 @@
-/* globals bench suite */
 "use strict";
 
 import Benchmark from "benchmark";
@@ -60,92 +59,94 @@ const longTextManyDiffMaxDistance = (fn) => {
   );
 };
 
-Benchmark.Suite()
-  .add("One word, ukkonen", () => {
+function onStart() {
+  console.log(String(this.name));
+}
+
+function onCycle(event) {
+  console.log(`\t ${String(event.target)}`);
+}
+
+Benchmark.Suite("One word")
+  .add("ukkonen", () => {
     oneWord(ukkonen);
   })
-  .add("One word, leven", () => {
+  .add("leven", () => {
     oneWord(leven);
   })
-  .add("One word, levenjs", () => {
+  .add("levenjs", () => {
     oneWord(levenjs);
   })
-  .on("cycle", function (event) {
-    console.log(String(event.target));
-  })
+  .on("start", onStart)
+  .on("cycle", onCycle)
   .run();
 
-Benchmark.Suite()
-  .add("Sentence, small difference, ukkonen", () => {
+Benchmark.Suite("Sentence, small difference")
+  .add("ukkonen", () => {
     sentenceSmallDiff(ukkonen);
   })
-  .add("Sentence, small difference, leven", () => {
+  .add("leven", () => {
     sentenceSmallDiff(leven);
   })
-  .add("Sentence, small difference, levenjs", () => {
+  .add("levenjs", () => {
     sentenceSmallDiff(levenjs);
   })
-  .on("cycle", function (event) {
-    console.log(String(event.target));
-  })
+  .on("start", onStart)
+  .on("cycle", onCycle)
   .run();
 
-Benchmark.Suite()
-  .add("Long text, small difference, ukkonen", () => {
+Benchmark.Suite("Long text, small difference")
+  .add("ukkonen", () => {
     longTextSmallDiff(ukkonen);
   })
-  .add("Paragraph, small difference, leven", () => {
+  .add("leven", () => {
     longTextSmallDiff(leven);
   })
-  .add("Paragraph, small difference, levenjs", () => {
+  .add("levenjs", () => {
     longTextSmallDiff(levenjs);
   })
-  .on("cycle", function (event) {
-    console.log(String(event.target));
-  })
+  .on("start", onStart)
+  .on("cycle", onCycle)
   .run();
 
-Benchmark.Suite()
-  .add("Long text, many difference, ukkonen", () => {
+Benchmark.Suite("Long text, many difference")
+  .add("ukkonen", () => {
     longTextManyDiff(ukkonen);
   })
-  .add("Paragraph, many difference, leven", () => {
+  .add("leven", () => {
     longTextManyDiff(leven);
   })
-  .add("Paragraph, many difference, levenjs", () => {
+  .add("levenjs", () => {
     longTextManyDiff(levenjs);
   })
-  .on("cycle", function (event) {
-    console.log(String(event.target));
-  })
+  .on("start", onStart)
+  .on("cycle", onCycle)
   .run();
 
-Benchmark.Suite()
-  .add("Long text, small difference, threshold 10, ukkonen", () => {
+Benchmark.Suite("Long text, small difference, threshold 10")
+  .add("ukkonen", () => {
     longTextMaxDistance(ukkonen);
   })
-  .add("Long text, small difference, threshold 10, leven", () => {
+  .add("leven", () => {
     longTextMaxDistance(leven);
   })
-  .add("Long text, small difference, threshold 10, levenjs", () => {
+  .add("levenjs", () => {
     longTextMaxDistance(levenjs);
   })
-  .on("cycle", function (event) {
-    console.log(String(event.target));
-  })
+  .on("start", onStart)
+  .on("cycle", onCycle)
   .run();
 
-Benchmark.Suite()
-  .add("Long text, many difference, threshold 40, ukkonen", () => {
+Benchmark.Suite("Long text, many difference, threshold 40")
+  .add("ukkonen", () => {
     longTextManyDiffMaxDistance(ukkonen);
   })
-  .add("Long text, many difference, threshold 40, leven", () => {
+  .add("leven", () => {
     longTextManyDiffMaxDistance(leven);
   })
-  .add("Long text, many difference, threshold 40, levenjs", () => {
+  .add("levenjs", () => {
     longTextManyDiffMaxDistance(levenjs);
   })
-  .on("cycle", function (event) {
-    console.log(String(event.target));
-  })
+  .on("start", onStart)
+  .on("cycle", onCycle)
   .run();
