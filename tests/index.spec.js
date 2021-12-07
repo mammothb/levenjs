@@ -4,11 +4,17 @@ import chai from "chai";
 import Chance from "chance";
 import levenjs from "../index.js";
 import ukkonen from "ukkonen";
+import leven from "leven";
 
 const expect = chai.expect;
 const chance = Chance(42);
 
 const numIterations = 100;
+
+const levenshtein = (s1, s2, maxDistance) => {
+  maxDistance = typeof maxDistance === "number" ? maxDistance : Infinity;
+  return Math.min(maxDistance, leven(s1, s2));
+};
 
 const edit = () => chance.pickone(["replace", "delete", "insert", "transpose"]);
 
@@ -105,40 +111,45 @@ describe("levenjs", () => {
   it("produces same result as Ukkonen", () => {
     strings(numIterations).forEach((s1) => {
       strings(numIterations).forEach((s2) => {
-        expect(levenjs(s1, s2)).equal(ukkonen(s1, s2));
+        expect(levenjs(s1, s2)).equal(leven(s1, s2));
       });
     });
   });
 
-  it("produces same result as Ukkonen for random edits", () => {
+  it("produces same result as leven for random edits", () => {
     editedTexts(numIterations).forEach((args) => {
       const text = args.text;
       const editedText = args.editedText;
-      expect(levenjs(text, editedText)).equal(ukkonen(text, editedText));
+      expect(levenjs(text, editedText)).equal(leven(text, editedText));
     });
   });
 
   describe("when given a threshold", () => {
-    it("produces same result as Ukkonen", () => {
+    it("produces same result as leven", () => {
       strings(numIterations).forEach((s1) => {
         strings(numIterations).forEach((s2) => {
           thresholds().forEach((threshold) => {
             expect(levenjs(s1, s2, threshold)).equal(
-              ukkonen(s1, s2, threshold)
+              levenshtein(s1, s2, threshold)
             );
           });
         });
       });
     });
 
-    it("produces same result as Ukkonen for random edits", () => {
+    it("produces same result as leven for random edits", () => {
       editedTexts(numIterations).forEach((args) => {
         thresholds().forEach((threshold) => {
           const text = args.text;
           const editedText = args.editedText;
-          expect(levenjs(text, editedText, threshold)).equal(
-            ukkonen(text, editedText, threshold)
-          );
+          expect(
+            levenjs(text, editedText, threshold),
+            `given ${text}, ${editedText}, ${threshold} ${levenjs(
+              text,
+              editedText,
+              threshold
+            )} ${levenshtein(text, editedText, threshold)}`
+          ).equal(levenshtein(text, editedText, threshold));
         });
       });
     });

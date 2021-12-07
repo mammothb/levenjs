@@ -1,4 +1,7 @@
-export default function levenjs(s1, s2, maxDistance) {
+const s2CharCodes = [];
+const char1Costs = [];
+
+const levenjs = (s1, s2, maxDistance) => {
   if (s1 === s2) {
     return 0;
   }
@@ -32,16 +35,16 @@ export default function levenjs(s1, s2, maxDistance) {
     ++offset;
   }
 
-  len1 -= offset;
-  len2 -= offset;
-
+  if (offset !== 0) {
+    len1 -= offset;
+    len2 -= offset;
+  }
   if (len1 === 0) {
     return len2 < maxDistance ? len2 : maxDistance;
   }
-
-  let char1Costs = new Array(len2);
   for (let i = 0; i < len2; ++i) {
     char1Costs[i] = i + 1;
+    s2CharCodes[i] = s2.charCodeAt(offset + i);
   }
 
   let currentCost = 0;
@@ -52,7 +55,7 @@ export default function levenjs(s1, s2, maxDistance) {
     for (let j = 0; j < len2; ++j) {
       currentCost = leftCharCost;
       leftCharCost = char1Costs[j];
-      if (char1 !== s2.charCodeAt(offset + j)) {
+      if (char1 !== s2CharCodes[j]) {
         if (aboveCharCost < currentCost) {
           currentCost = aboveCharCost;
         }
@@ -65,5 +68,8 @@ export default function levenjs(s1, s2, maxDistance) {
       char1Costs[j] = currentCost;
     }
   }
-  return currentCost <= maxDistance ? currentCost : maxDistance;
-}
+
+  return currentCost < maxDistance ? currentCost : maxDistance;
+};
+
+export default levenjs;
