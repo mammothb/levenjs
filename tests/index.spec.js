@@ -1,12 +1,9 @@
 "use strict";
 
-import chai from "chai";
 import Chance from "chance";
 import levenjs from "../index.js";
-import ukkonen from "ukkonen";
 import leven from "leven";
 
-const expect = chai.expect;
 const chance = Chance(42);
 
 const numIterations = 100;
@@ -104,14 +101,14 @@ describe("levenjs", () => {
       { name1: "wat", name2: "wat", distance: 0 },
       { name1: "Ukkonen", name2: "Levenshtein", distance: 8 },
     ].forEach((example) => {
-      expect(levenjs(example.name1, example.name2)).equal(example.distance);
+      expect(levenjs(example.name1, example.name2)).toBe(example.distance);
     });
   });
 
   it("produces same result as Ukkonen", () => {
     strings(numIterations).forEach((s1) => {
       strings(numIterations).forEach((s2) => {
-        expect(levenjs(s1, s2)).equal(leven(s1, s2));
+        expect(levenjs(s1, s2)).toBe(leven(s1, s2));
       });
     });
   });
@@ -120,7 +117,7 @@ describe("levenjs", () => {
     editedTexts(numIterations).forEach((args) => {
       const text = args.text;
       const editedText = args.editedText;
-      expect(levenjs(text, editedText)).equal(leven(text, editedText));
+      expect(levenjs(text, editedText)).toBe(leven(text, editedText));
     });
   });
 
@@ -129,7 +126,7 @@ describe("levenjs", () => {
       strings(numIterations).forEach((s1) => {
         strings(numIterations).forEach((s2) => {
           thresholds().forEach((threshold) => {
-            expect(levenjs(s1, s2, threshold)).equal(
+            expect(levenjs(s1, s2, threshold)).toBe(
               levenshtein(s1, s2, threshold)
             );
           });
@@ -142,7 +139,7 @@ describe("levenjs", () => {
         thresholds().forEach((threshold) => {
           const text = args.text;
           const editedText = args.editedText;
-          expect(levenjs(text, editedText, threshold)).equal(
+          expect(levenjs(text, editedText, threshold)).toBe(
             levenshtein(text, editedText, threshold)
           );
         });

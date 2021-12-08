@@ -22,5 +22,11 @@ jobs:
 
       - name: Install dependencies
         run: npm install
+
       - name: Run test
         run: npm test
+
+      - name: Upload code coverage
+        uses: codecov/codecov-action@v2
+        with:
+          file: ./coverage/coverage-final.json
