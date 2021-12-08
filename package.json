@@ -13,9 +13,15 @@
   "engines": {
     "node": "^12.22.0 || ^14.17.0 || ^15.3.0 || >=16.0.0"
   },
+  "jest": {
+    "collectCoverage": true,
+    "coverageReporters": [
+      "json"
+    ]
+  },
   "scripts": {
     "bench": "node bench.js",
-    "test": "mocha tests/index.spec.js --no-timeouts"
+    "test": "NODE_OPTIONS='--experimental-vm-modules' jest tests --coverage"
   },
   "files": [
     "index.js"
@@ -33,10 +39,9 @@
   ],
   "devDependencies": {
     "benchmark": "^2.1.4",
-    "chai": "^4.3.4",
     "chance": "^1.1.8",
+    "jest": "^27.4.3",
     "leven": "^4.0.0",
-    "mocha": "^9.1.3",
     "ukkonen": "^1.4.0"
   }
 }

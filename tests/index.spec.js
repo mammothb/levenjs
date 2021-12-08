@@ -1,12 +1,10 @@
 "use strict";
 
-import chai from "chai";
 import Chance from "chance";
-import levenjs from "../index.js";
-import ukkonen from "ukkonen";
 import leven from "leven";
 
-const expect = chai.expect;
+import levenjs from "../index.js";
+
 const chance = Chance(42);
 
 const numIterations = 100;
@@ -77,41 +75,41 @@ const thresholds = () => {
 describe("levenjs", () => {
   it("computes distance correctly for control group", () => {
     [
-      { name1: "ABCDE", name2: "FGHIJ", distance: 5 },
-      { name1: "AVERY", name2: "GARVEY", distance: 3 },
-      { name1: "ADCROFT", name2: "ADDESSI", distance: 5 },
-      { name1: "BAIRD", name2: "BAISDEN", distance: 3 },
-      { name1: "BOGGAN", name2: "BOGGS", distance: 2 },
-      { name1: "CLAYTON", name2: "CLEARY", distance: 5 },
-      { name1: "DYBAS", name2: "DYCKMAN", distance: 4 },
-      { name1: "EMINETH", name2: "EMMERT", distance: 4 },
-      { name1: "GALANTE", name2: "GALICKI", distance: 4 },
-      { name1: "HARDIN", name2: "HARDING", distance: 1 },
-      { name1: "KEHOE", name2: "KEHR", distance: 2 },
-      { name1: "LOWRY", name2: "LUBARSK", distance: 5 },
-      { name1: "MAGALLAN", name2: "MAGANA", distance: 3 },
-      { name1: "MAYO", name2: "MAYS", distance: 1 },
-      { name1: "MOENY", name2: "MOFFETT", distance: 4 },
-      { name1: "PARE", name2: "PARENT", distance: 2 },
-      { name1: "RAMEY", name2: "RAMFREY", distance: 2 },
-      { name1: "ofosid", name2: "daej", distance: 6 },
-      { name1: "of", name2: "lisib", distance: 5 },
-      { name1: "nuhijoow", name2: "ru", distance: 7 },
-      { name1: "w", name2: "4", distance: 1 },
-      { name1: "", name2: "", distance: 0 },
-      { name1: "", name2: "wat", distance: 3 },
-      { name1: "wat", name2: "", distance: 3 },
-      { name1: "wat", name2: "wat", distance: 0 },
-      { name1: "Ukkonen", name2: "Levenshtein", distance: 8 },
-    ].forEach((example) => {
-      expect(levenjs(example.name1, example.name2)).equal(example.distance);
+      { s1: "ABCDE", s2: "FGHIJ", distance: 5 },
+      { s1: "AVERY", s2: "GARVEY", distance: 3 },
+      { s1: "ADCROFT", s2: "ADDESSI", distance: 5 },
+      { s1: "BAIRD", s2: "BAISDEN", distance: 3 },
+      { s1: "BOGGAN", s2: "BOGGS", distance: 2 },
+      { s1: "CLAYTON", s2: "CLEARY", distance: 5 },
+      { s1: "DYBAS", s2: "DYCKMAN", distance: 4 },
+      { s1: "EMINETH", s2: "EMMERT", distance: 4 },
+      { s1: "GALANTE", s2: "GALICKI", distance: 4 },
+      { s1: "HARDIN", s2: "HARDING", distance: 1 },
+      { s1: "KEHOE", s2: "KEHR", distance: 2 },
+      { s1: "LOWRY", s2: "LUBARSK", distance: 5 },
+      { s1: "MAGALLAN", s2: "MAGANA", distance: 3 },
+      { s1: "MAYO", s2: "MAYS", distance: 1 },
+      { s1: "MOENY", s2: "MOFFETT", distance: 4 },
+      { s1: "PARE", s2: "PARENT", distance: 2 },
+      { s1: "RAMEY", s2: "RAMFREY", distance: 2 },
+      { s1: "ofosid", s2: "daej", distance: 6 },
+      { s1: "of", s2: "lisib", distance: 5 },
+      { s1: "nuhijoow", s2: "ru", distance: 7 },
+      { s1: "w", s2: "4", distance: 1 },
+      { s1: "", s2: "", distance: 0 },
+      { s1: "", s2: "wat", distance: 3 },
+      { s1: "wat", s2: "", distance: 3 },
+      { s1: "wat", s2: "wat", distance: 0 },
+      { s1: "Ukkonen", s2: "Levenshtein", distance: 8 },
+    ].forEach((sample) => {
+      expect(levenjs(sample.s1, sample.s2)).toBe(sample.distance);
     });
   });
 
   it("produces same result as Ukkonen", () => {
     strings(numIterations).forEach((s1) => {
       strings(numIterations).forEach((s2) => {
-        expect(levenjs(s1, s2)).equal(leven(s1, s2));
+        expect(levenjs(s1, s2)).toBe(leven(s1, s2));
       });
     });
   });
@@ -120,7 +118,7 @@ describe("levenjs", () => {
     editedTexts(numIterations).forEach((args) => {
       const text = args.text;
       const editedText = args.editedText;
-      expect(levenjs(text, editedText)).equal(leven(text, editedText));
+      expect(levenjs(text, editedText)).toBe(leven(text, editedText));
     });
   });
 
@@ -129,7 +127,7 @@ describe("levenjs", () => {
       strings(numIterations).forEach((s1) => {
         strings(numIterations).forEach((s2) => {
           thresholds().forEach((threshold) => {
-            expect(levenjs(s1, s2, threshold)).equal(
+            expect(levenjs(s1, s2, threshold)).toBe(
               levenshtein(s1, s2, threshold)
             );
           });
@@ -142,7 +140,7 @@ describe("levenjs", () => {
         thresholds().forEach((threshold) => {
           const text = args.text;
           const editedText = args.editedText;
-          expect(levenjs(text, editedText, threshold)).equal(
+          expect(levenjs(text, editedText, threshold)).toBe(
             levenshtein(text, editedText, threshold)
           );
         });
