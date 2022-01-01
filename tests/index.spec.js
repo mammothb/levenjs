@@ -9,9 +9,9 @@ const chance = Chance(42);
 
 const numIterations = 100;
 
-const levenshtein = (s1, s2, maxDistance) => {
-  maxDistance = typeof maxDistance === "number" ? maxDistance : Infinity;
-  return Math.min(maxDistance, leven(s1, s2));
+const levenshtein = (s1, s2, maxDist) => {
+  maxDist = typeof maxDist === "number" ? maxDist : Infinity;
+  return Math.min(maxDist, leven(s1, s2));
 };
 
 const edit = () => chance.pickone(["replace", "delete", "insert", "transpose"]);
@@ -67,7 +67,7 @@ const thresholds = () => {
   const count = 20;
   const result = new Array(count);
   for (let i = 0; i < count; ++i) {
-    result[i] = 10 + i;
+    result[i] = i;
   }
   return result;
 };
@@ -106,7 +106,7 @@ describe("levenjs", () => {
     });
   });
 
-  it("produces same result as Ukkonen", () => {
+  it("produces same result as leven", () => {
     strings(numIterations).forEach((s1) => {
       strings(numIterations).forEach((s2) => {
         expect(levenjs(s1, s2)).toBe(leven(s1, s2));
